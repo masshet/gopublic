@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">GoPublic</string>
+
+    <string name="screen_start_slogan">Ваши послания на экранах города</string>
+    <string name="screen_start_button">Авторизация через sms</string>
+    <string name="screen_start_without_registration">Продолжить без регистрации</string>
 </resources>

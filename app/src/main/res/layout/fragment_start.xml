@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/start_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/app_icon" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="22sp"
+        android:textColor="@android:color/white"
+        android:text="@string/app_name"/>
+
+    <TextView
+        android:layout_below="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textSize="15sp"
+        android:textColor="@android:color/white"
+        android:text="@string/screen_start_slogan"/>
+
+    <com.digits.sdk.android.DigitsAuthButton
+        android:id="@+id/authorization_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="16sp"
+        android:layout_above="@+id/without_registration"
+        android:textColorPrimary="@android:color/black"
+        android:background="@color/dgts__text_dark"
+        android:text="@string/screen_start_button"/>
+
+    <TextView
+        android:id="@+id/without_registration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textSize="22sp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:text="@string/screen_start_without_registration"/>
+
+</RelativeLayout>
