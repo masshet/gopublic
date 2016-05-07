@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">GoPublic</string>
+    <string name="city_screens_fragment">CityScreens</string>
+
+    <string name="view_navigation_open">Open</string>
+    <string name="view_navigation_close">Close</string>
 
     <string name="screen_start_slogan">Ваши послания на экранах города</string>
     <string name="screen_start_button">Авторизация через sms</string>
