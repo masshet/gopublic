@@ -8,7 +8,9 @@ import com.digits.sdk.android.AuthCallback
 import com.digits.sdk.android.Digits
 import com.digits.sdk.android.DigitsException
 import com.digits.sdk.android.DigitsSession
+import com.mrstark.gopublic.entity.Screen
 import com.mrstark.gopublic.fragment.CityScreensFragment
+import com.mrstark.gopublic.fragment.ScreenFragment
 import com.mrstark.gopublic.fragment.StartFragment
 import com.twitter.sdk.android.core.TwitterAuthConfig
 import com.twitter.sdk.android.core.TwitterCore
@@ -53,6 +55,12 @@ class MainActivity : AppCompatActivity() {
     private fun loadFragment() {
         transaction = fragmentManager.beginTransaction()
         transaction?.add(R.id.container, StartFragment())
+        transaction?.commit()
+    }
+
+    fun loadDetails(screen: Screen) {
+        transaction = fragmentManager.beginTransaction()
+        transaction?.add(R.id.container, ScreenFragment(screen))
         transaction?.commit()
     }
 }

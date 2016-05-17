@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoPublic</string>
+    <string name="app_name">Go Public</string>
     <string name="city_screens_fragment">CityScreens</string>
 
     <string name="view_navigation_open">Open</string>
