@@ -60,7 +60,9 @@ class MainActivity : AppCompatActivity() {
 
     fun loadDetails(screen: Screen) {
         transaction = fragmentManager.beginTransaction()
-        transaction?.add(R.id.container, ScreenFragment(screen))
+        var fragment = ScreenFragment()
+        fragment.screen = screen
+        transaction?.add(R.id.container, fragment)
         transaction?.commit()
     }
 }

@@ -61,7 +61,7 @@ class CityScreensFragment: Fragment() {
             }
 
             override fun onFailure(call: Call<List<Screen>>?, t: Throwable?) {
-                throw UnsupportedOperationException()
+
             }
 
         })
