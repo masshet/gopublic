@@ -1,7 +1,9 @@
 package com.mrstark.gopublic
 
 import android.app.FragmentTransaction
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.digits.sdk.android.AuthCallback
@@ -18,11 +20,13 @@ import io.fabric.sdk.android.Fabric
 
 class MainActivity : AppCompatActivity() {
 
-    private val TWITTER_KEY = "FmoMoerEnmzdmEchbhVuxGa4L";
-    private val TWITTER_SECRET = "qXhrLyreLEcAE0bErfBKjOiHyUuKk1u1Oip39pW1ba6zgnxh0P";
+    private val TWITTER_KEY = "FmoMoerEnmzdmEchbhVuxGa4L"
+    private val TWITTER_SECRET = "qXhrLyreLEcAE0bErfBKjOiHyUuKk1u1Oip39pW1ba6zgnxh0P"
+    val KEY_SCREEN = "screen"
 
     var callback: AuthCallback? = null
     var transaction: FragmentTransaction? = null
+    var detailsFragment: ScreenFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            loadFragment()
+            loadStartFragment()
         }
 
         callback = object: AuthCallback {
@@ -46,23 +50,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            var selectedImage = data.data
+            var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
+            detailsFragment?.loadPhoto(bitmap)
+        }
+    }
+
     fun loadCityScreens() {
         transaction = fragmentManager.beginTransaction()
         transaction?.replace(R.id.container, CityScreensFragment())
         transaction?.commit()
     }
 
-    private fun loadFragment() {
+    private fun loadStartFragment() {
         transaction = fragmentManager.beginTransaction()
         transaction?.add(R.id.container, StartFragment())
         transaction?.commit()
     }
 
     fun loadDetails(screen: Screen) {
+        var bundle = Bundle()
+        bundle.putParcelable(KEY_SCREEN, screen)
         transaction = fragmentManager.beginTransaction()
-        var fragment = ScreenFragment()
-        fragment.screen = screen
-        transaction?.add(R.id.container, fragment)
+        detailsFragment = ScreenFragment()
+        detailsFragment?.arguments = bundle
+        transaction?.add(R.id.container, detailsFragment)
         transaction?.commit()
+    }
+
+    fun loadImages() {
+        var intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, 1)
     }
 }

@@ -13,7 +13,7 @@ import com.mrstark.gopublic.R
 /**
  * Created by mrstark on 5/5/16.
  */
-class StartFragment : Fragment(), View.OnClickListener {
+class StartFragment : Fragment() {
     var button: DigitsAuthButton? = null
 
     var textview: TextView? = null
@@ -21,13 +21,9 @@ class StartFragment : Fragment(), View.OnClickListener {
         val root = inflater.inflate(R.layout.fragment_start, container, false)
         button = root.findViewById(R.id.authorization_button) as DigitsAuthButton
         textview = root.findViewById(R.id.without_registration) as TextView
-        textview?.setOnClickListener(this)
+        textview?.setOnClickListener { (activity as MainActivity).loadCityScreens() }
         setUpButton()
         return root
-    }
-
-    override fun onClick(v: View?) {
-        (activity as MainActivity).loadCityScreens()
     }
 
     private fun setUpButton() {

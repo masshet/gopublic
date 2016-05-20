@@ -145,6 +145,8 @@
                         android:id="@+id/add_photo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:textColor="@android:color/white"
                         android:paddingEnd="20dp"
                         android:paddingStart="20dp"
                         android:text="Добавить фото"
@@ -152,8 +154,8 @@
 
                     <ImageView
                         android:id="@+id/photo"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
 
                         android:src="@android:drawable/ic_menu_camera"
                         android:visibility="gone"
@@ -202,6 +204,8 @@
                 android:id="@+id/send"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:textColor="@android:color/white"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="16dp"
                 android:text="Разместить"
