@@ -5,6 +5,25 @@
     <string name="view_navigation_open">Open</string>
     <string name="view_navigation_close">Close</string>
 
+    <string name="how_much">На сколько?</string>
+
+    <string-array name="time_list">
+        <item>10</item>
+        <item>20</item>
+    </string-array>
+
+    <string name="seconds">секунд</string>
+
+    <string name="take_picture">Добавить</string>
+
+    <string-array name="add_actions">
+        <item>Фото</item>
+        <item>Галерея</item>
+    </string-array>
+
+    <string name="checkbox_five_minutes">Опубликовать сейчас (в течении 5 минут)</string>
+    <string name="checkbox_agreement">Если на фотографии/видео присутствует лицо постороннего человека, то размещая контент вы подтвержаете, что этот человек дал вам согласие на это</string>
+
     <string name="screen_start_slogan">Ваши послания на экранах города</string>
     <string name="screen_start_button">Авторизация через sms</string>
     <string name="screen_start_without_registration">Продолжить без регистрации</string>

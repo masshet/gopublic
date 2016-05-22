@@ -46,7 +46,7 @@ class CityScreensFragment: Fragment() {
 
     private fun setupRecycleView(root: View?) {
         recyclerView = root?.findViewById(R.id.list_screens) as RecyclerView?
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = LinearLayoutManager(activity)
 
         var retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)

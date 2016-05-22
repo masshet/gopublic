@@ -21,7 +21,7 @@ class ListScreensAdapter(var list: List<Screen>) : RecyclerView.Adapter<ListScre
         holder.coast.text = list[position].cost.toString()
         holder.workTime.text = list[position].workTime
         Picasso.with(context).load(list[position].image).into(holder.image)
-        holder.card.setOnClickListener { (context as MainActivity).loadDetails(list[position]) }
+        holder.card.setOnClickListener { (context as MainActivity).makeAnOrder(list[position]) }
 
     }
 

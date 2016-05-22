@@ -2,6 +2,7 @@ package com.mrstark.gopublic
 
 import android.app.FragmentTransaction
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
@@ -52,10 +53,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            var selectedImage = data.data
-            var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-            detailsFragment?.loadPhoto(bitmap)
+        if (resultCode == RESULT_OK && data != null) {
+            when(requestCode) {
+                1 -> {
+                    var selectedImage = data.data
+                    var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
+                    detailsFragment?.loadPhoto(bitmap)
+                }
+                2 -> {
+                    var extras = data.extras;
+                    var imageBitmap = extras.get("data") as Bitmap;
+                    detailsFragment?.loadPhoto(imageBitmap)
+                }
+            }
         }
     }
 
@@ -71,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         transaction?.commit()
     }
 
-    fun loadDetails(screen: Screen) {
+    fun makeAnOrder(screen: Screen) {
         var bundle = Bundle()
         bundle.putParcelable(KEY_SCREEN, screen)
         transaction = fragmentManager.beginTransaction()
@@ -79,6 +89,11 @@ class MainActivity : AppCompatActivity() {
         detailsFragment?.arguments = bundle
         transaction?.add(R.id.container, detailsFragment)
         transaction?.commit()
+    }
+
+    fun takeAPhoto() {
+        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, 2)
     }
 
     fun loadImages() {
