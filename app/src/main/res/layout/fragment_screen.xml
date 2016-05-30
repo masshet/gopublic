@@ -6,13 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:fitsSystemWindows="false">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -36,6 +36,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                android:layout_marginTop="24dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -97,6 +98,12 @@
                     tools:text="ksdflksdflkjdsf"/>
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/money"/>
+
+                <TextView
                     android:id="@+id/work_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -153,7 +160,7 @@
                         android:textColor="@android:color/white"
                         android:paddingEnd="20dp"
                         android:paddingStart="20dp"
-                        android:text="Добавить фото"/>
+                        android:text="@string/add_photo"/>
 
                     <ImageView
                         android:id="@+id/photo"
@@ -294,17 +301,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Стоимость размещения"/>
+                    android:text="@string/post_price"/>
 
-                <TextView
-                    android:id="@+id/full_price"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    tools:text="ksdflksdflkjdsf"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/full_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        tools:text="ksdflksdflkjdsf"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:text="@string/money"/>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -317,7 +339,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="16dp"
                 android:clickable="false"
-                android:text="Разместить"/>
+                android:text="@string/post"/>
 
         </LinearLayout>
 

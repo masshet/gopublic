@@ -30,6 +30,6 @@ class StartFragment : Fragment() {
         button?.setAuthTheme(android.R.style.ThemeOverlay_Material)
         button?.setCallback((activity as MainActivity).callback)
         button?.setBackgroundColor(resources.getColor(R.color.colorAccent, null))
-        button?.setText(R.string.screen_start_button)
+        button?.setText(R.string.authorization)
     }
 }

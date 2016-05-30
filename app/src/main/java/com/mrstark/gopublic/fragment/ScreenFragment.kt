@@ -4,6 +4,7 @@ import android.app.Fragment
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -29,17 +30,20 @@ class ScreenFragment(): Fragment() {
     private var dateCheckBox: CheckBox? = null
     private var spinner: Spinner? = null
     private var deleteIcon: ImageView? = null
+    private var send: Button? = null
+    private var agreement: CheckBox? = null
     var screen: Screen? = null
+    var root: View? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater?.inflate(R.layout.fragment_screen, container, false)
-        init(root)
-        initToolbar(root)
+        root = inflater?.inflate(R.layout.fragment_screen, container, false)
+        init()
+        initToolbar()
         loadData()
         return root
     }
 
-    private fun initToolbar(root: View?) {
+    private fun initToolbar() {
         toolbar = root?.findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
         toolbar?.title = screen?.address
         toolbar?.setExpandedTitleColor(android.R.color.transparent)
@@ -60,7 +64,7 @@ class ScreenFragment(): Fragment() {
         price?.text = screen?.cost.toString()
     }
 
-    private fun init(root: View?) {
+    private fun init() {
         screen = arguments.getParcelable((activity as MainActivity).KEY_SCREEN)
 
         image = root?.findViewById(R.id.image) as ImageView
@@ -95,6 +99,17 @@ class ScreenFragment(): Fragment() {
         deleteIcon?.setOnClickListener { deletePicture() }
 
         dateAndTime = root?.findViewById(R.id.date_and_time_layout) as LinearLayout
+
+        agreement = root?.findViewById(R.id.agreement_checkbox) as CheckBox
+
+        send = root?.findViewById(R.id.send) as Button
+        send?.setOnClickListener { sendOrder() }
+    }
+
+    private fun sendOrder() {
+        if (agreement?.isChecked!! == false) {
+            Snackbar.make(root?.findViewById(R.id.view_screens)!!, R.string.agreement_false, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun deletePicture() {
