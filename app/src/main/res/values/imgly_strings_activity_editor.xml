@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="imgly_photo_editor_title">Редактор</string>
+
+    <string name="imgly_photo_editor_accept">Принять</string>
+    <string name="imgly_photo_editor_cancel">Закрыть</string>
+
+    <string name="imgly_photo_editor_save">Сохранить</string>
+
+    <string name="imgly_photo_editor_cancel_image_title">Закрыть редактор?</string>
+    <string name="imgly_photo_editor_cancel_image_content">Действительно не хотите сохранять это изображение?</string>
+    <string name="imgly_photo_editor_cancel_image_yes">Да</string>
+    <string name="imgly_photo_editor_cancel_image_no">Нет</string>
+
+    <string name="imgly_photo_editor_export_progress">Экспортироние изображения…</string>
+
+</resources>

@@ -6,6 +6,7 @@ import com.digits.sdk.android.Digits
 import com.twitter.sdk.android.core.TwitterAuthConfig
 import com.twitter.sdk.android.core.TwitterCore
 import io.fabric.sdk.android.Fabric
+import ly.img.android.ImgLySdk
 
 /**
  * Created by mrstark on 5/25/16.
@@ -25,5 +26,6 @@ class App : Application(){
         siglton = this
         authConfig = TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET)
         Fabric.with(this, TwitterCore(authConfig), Digits())
+        ImgLySdk.init(this);
     }
 }

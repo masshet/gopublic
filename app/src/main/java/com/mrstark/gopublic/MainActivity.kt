@@ -4,7 +4,6 @@ import android.app.FragmentTransaction
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -18,27 +17,29 @@ import com.mrstark.gopublic.entity.User
 import com.mrstark.gopublic.fragment.CityScreensFragment
 import com.mrstark.gopublic.fragment.ScreenFragment
 import com.mrstark.gopublic.fragment.StartFragment
+import com.mrstark.gopublic.util.CameraIntentHelper
 import com.twitter.sdk.android.core.TwitterAuthToken
 import com.twitter.sdk.android.core.TwitterCore
+import ly.img.android.ui.utilities.PermissionRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), PermissionRequest.Response {
     private var BASE_URL = "http://gopublic.by/api/"
+    private var CAMERA_PREVIEW_RESULT = 2
+
     private var credentials: String? = null
     val KEY_SCREEN = "screen"
     val KEY_REGISTER = "register"
     val KEY_CREDENTIAL = "X-Verify-Credentials-Authorization"
-
-
     var callback: AuthCallback? = null
+
+
     var transaction: FragmentTransaction? = null
     var detailsFragment: ScreenFragment? = null
-
     private val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -98,13 +99,25 @@ class MainActivity : AppCompatActivity() {
                     var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
                     detailsFragment?.loadPhoto(bitmap)
                 }
-                2 -> {
+                CAMERA_PREVIEW_RESULT -> {
                     var extras = data.extras;
                     var imageBitmap = extras.get("data") as Bitmap;
-                    detailsFragment?.loadPhoto(imageBitmap)
+                   // detailsFragment?.loadPhoto(imageBitmap)
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        PermissionRequest.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun permissionDenied() {
+    }
+
+    override fun permissionGranted() {
+
     }
 
     fun loadCityScreens() {
@@ -139,8 +152,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun takeAPhoto() {
-        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, 2)
+        CameraIntentHelper().getCameraIntent(this)
+                .startActivityForResult(CAMERA_PREVIEW_RESULT)
     }
 
     fun loadImages() {

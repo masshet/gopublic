@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="imgly_tool_name_magic">Магия</string>
+    <string name="imgly_tool_name_filter">Филтр</string>
+    <string name="imgly_tool_name_orientation">Ориентация</string>
+    <string name="imgly_tool_name_focus">Фокус</string>
+    <string name="imgly_tool_name_crop">Обрезать</string>
+    <string name="imgly_tool_name_adjust">Регулировать</string>
+    <string name="imgly_tool_name_adjust_brightness">Яркость</string>
+    <string name="imgly_tool_name_adjust_contrast">Контраст</string>
+    <string name="imgly_tool_name_adjust_saturation">Насыщенность</string>
+    <string name="imgly_tool_name_sticker">Стикер</string>
+    <string name="imgly_tool_name_sticker_options">Настройки стикера</string>
+    <string name="imgly_tool_name_text">Текст</string>
+    <string name="imgly_tool_name_text_add">Текст</string>
+    <string name="imgly_tool_name_text_options">Настройки текста</string>
+    <string name="imgly_tool_name_text_color">Цвет текста</string>
+    <string name="imgly_tool_name_text_font">Шрифт</string>
+
+</resources>
