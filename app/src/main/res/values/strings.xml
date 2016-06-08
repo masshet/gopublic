@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Go Public</string>
-    <string name="city_screens_fragment">CityScreens</string>
+    <string name="city_screens_fragment">Экраны города</string>
+    <string name="orders">Заказы</string>
 
     <string name="view_navigation_open">Open</string>
     <string name="view_navigation_close">Close</string>
@@ -22,6 +23,7 @@
     </string-array>
 
     <string name="agreement_false">Подтвердите соглашение</string>
+    <string name="choose_image">Выберите изображение</string>
 
     <string name="checkbox_five_minutes">Опубликовать сейчас (в течении 5 минут)</string>
     <string name="checkbox_agreement">Если на фотографии/видео присутствует лицо постороннего человека, то размещая контент вы подтвержаете, что этот человек дал вам согласие на это</string>

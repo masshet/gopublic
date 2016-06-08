@@ -1,23 +1,38 @@
 package com.mrstark.gopublic.fragment
 
 import android.app.Fragment
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.mrstark.gopublic.MainActivity
 import com.mrstark.gopublic.R
+import com.mrstark.gopublic.api.Api2
 import com.mrstark.gopublic.entity.Screen
+import com.squareup.okhttp.OkHttpClient
 import com.squareup.picasso.Picasso
+import org.json.JSONObject
+import retrofit.Callback
+import retrofit.RestAdapter
+import retrofit.RetrofitError
+import retrofit.client.OkClient
+import retrofit.client.Response
+import retrofit.mime.TypedFile
+import retrofit.mime.TypedString
+import java.io.File
+import java.util.*
 
 class ScreenFragment(): Fragment() {
     private var dateAndTime: LinearLayout? = null
-    private var toolbar: CollapsingToolbarLayout? = null
+    private var collapsingToolbar: CollapsingToolbarLayout? = null
+    private var toolbar: android.support.v7.widget.Toolbar? = null
     private var description: TextView? = null
     private var cost: TextView? = null
     private var workTime: TextView? = null
@@ -32,6 +47,8 @@ class ScreenFragment(): Fragment() {
     private var deleteIcon: ImageView? = null
     private var send: Button? = null
     private var agreement: CheckBox? = null
+    private var path: String? = null
+    private var showTime: Int = 1
     var screen: Screen? = null
     var root: View? = null
 
@@ -44,12 +61,18 @@ class ScreenFragment(): Fragment() {
     }
 
     private fun initToolbar() {
-        toolbar = root?.findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
-        toolbar?.title = screen?.address
-        toolbar?.setExpandedTitleColor(android.R.color.transparent)
+        collapsingToolbar = root?.findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
+        collapsingToolbar?.title = screen?.address
+        collapsingToolbar?.setExpandedTitleColor(android.R.color.transparent)
+        toolbar = root?.findViewById(R.id.toolbar) as Toolbar
+        toolbar?.setNavigationOnClickListener { (activity as MainActivity).onBackPressed() }
     }
 
-    fun loadPhoto(bitmap: Bitmap) {
+    fun loadPhoto(path: String) {
+        this.path = path
+        Log.d("MyTag", path)
+        var file = File(path)
+        var bitmap = BitmapFactory.decodeFile(file.toString())
         photo?.visibility = View.VISIBLE
         photo?.setImageBitmap(bitmap)
         addPhotoButton?.visibility = View.GONE
@@ -78,6 +101,7 @@ class ScreenFragment(): Fragment() {
         timePicker?.setIs24HourView(true)
 
         datePicker = root?.findViewById(R.id.date_picker) as DatePicker
+        datePicker?.minDate = Calendar.getInstance().timeInMillis
 
         dateCheckBox = root?.findViewById(R.id.date_checkbox) as CheckBox
         dateCheckBox?.setOnCheckedChangeListener { buttonView, isChecked -> onCheckedChanged(isChecked) }
@@ -91,6 +115,7 @@ class ScreenFragment(): Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 price?.text = ((position + 1) * (screen?.cost!!)).toString()
+                showTime = position + 1
             }
 
         }
@@ -109,6 +134,29 @@ class ScreenFragment(): Fragment() {
     private fun sendOrder() {
         if (agreement?.isChecked!! == false) {
             Snackbar.make(root?.findViewById(R.id.view_screens)!!, R.string.agreement_false, Snackbar.LENGTH_SHORT).show()
+        } else if (path == null) {
+            Snackbar.make(root?.findViewById(R.id.view_screens)!!, R.string.choose_image, Snackbar.LENGTH_SHORT).show()
+        } else {
+            val credentials = activity.getPreferences(AppCompatActivity.MODE_PRIVATE).getString((activity as MainActivity).KEY_CREDENTIAL, "")
+            client.upload(
+                    credentials,
+                    TypedFile("image/*", File(path)),
+                    TypedString(spinner?.firstVisiblePosition.toString()),
+                    TypedString(screen?.id.toString()),
+                    TypedString(dateCheckBox?.isChecked.toString()),
+                    TypedString(getDate()),
+                    TypedString(getTime()),
+                    TypedString(agreement?.isChecked.toString()),
+                    object : Callback<JSONObject> {
+                        override fun success(t: JSONObject?, response: Response?) {
+                            (activity as MainActivity).loadCabinet()
+                        }
+
+                        override fun failure(error: RetrofitError?) {
+                            Log.d("MyTag", error?.message)
+                        }
+
+                    })
         }
     }
 
@@ -129,4 +177,13 @@ class ScreenFragment(): Fragment() {
             false -> dateAndTime?.visibility = View.VISIBLE
         }
     }
+
+    fun getDate(): String = datePicker?.dayOfMonth.toString() + "/" + datePicker?.month.toString() + "/" + datePicker?.year.toString()
+    fun getTime(): String = timePicker?.hour.toString() + ":" + timePicker?.minute.toString()
+
+    private val builder = RestAdapter.Builder()
+            .setEndpoint("http://gopublic.by/api")
+            .setClient(OkClient(OkHttpClient()))
+
+    private val client = builder.build().create(Api2::class.java)
 }

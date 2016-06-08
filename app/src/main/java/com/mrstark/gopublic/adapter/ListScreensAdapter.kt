@@ -22,7 +22,6 @@ class ListScreensAdapter(var list: List<Screen>) : RecyclerView.Adapter<ListScre
         holder.workTime.text = list[position].workTime
         Picasso.with(context).load(list[position].image).into(holder.image)
         holder.card.setOnClickListener { (context as MainActivity).makeAnOrder(list[position]) }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {

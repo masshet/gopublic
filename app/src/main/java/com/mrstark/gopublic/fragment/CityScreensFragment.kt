@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -27,20 +28,21 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class CityScreensFragment: Fragment() {
-
+class CityScreensFragment: Fragment(), Toolbar.OnMenuItemClickListener {
     private var BASE_URL = "http://gopublic.by/api/"
 
     private var toolbar: Toolbar? = null
+
     private var layout: DrawerLayout? = null
     private var recyclerView: RecyclerView? = null
     private var navigationView: NavigationView? = null
-
+    public var screensList: List<Screen>? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater?.inflate(R.layout.fragment_city_screens, container, false)
         setupToolbar(root)
         setupNavigationView(root)
         setupRecycleView(root)
+        setHasOptionsMenu(true)
         return root
     }
 
@@ -100,6 +102,7 @@ class CityScreensFragment: Fragment() {
         var call = (activity as MainActivity).api.getAllScreens()
         call.enqueue(object : Callback<List<Screen>> {
             override fun onResponse(call: Call<List<Screen>>?, response: Response<List<Screen>>) {
+                screensList = response.body()
                 recyclerView?.adapter = ListScreensAdapter(response.body())
             }
 
@@ -113,5 +116,14 @@ class CityScreensFragment: Fragment() {
     private fun setupToolbar(root: View?) {
         toolbar = root?.findViewById(R.id.toolbar) as Toolbar
         toolbar?.setTitle(R.string.city_screens_fragment)
+        toolbar?.inflateMenu(R.menu.menu_city_screens)
+        toolbar?.setOnMenuItemClickListener(this)
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.cabinet -> (activity as MainActivity).loadCabinet()
+        }
+        return true
     }
 }

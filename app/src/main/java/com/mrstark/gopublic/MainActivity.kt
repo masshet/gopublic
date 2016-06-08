@@ -2,24 +2,25 @@ package com.mrstark.gopublic
 
 import android.app.FragmentTransaction
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.digits.sdk.android.AuthCallback
 import com.digits.sdk.android.DigitsException
 import com.digits.sdk.android.DigitsOAuthSigning
 import com.digits.sdk.android.DigitsSession
+import com.mrstark.gopublic.activity.GalleryActivity
 import com.mrstark.gopublic.api.Api
 import com.mrstark.gopublic.entity.Screen
 import com.mrstark.gopublic.entity.User
+import com.mrstark.gopublic.fragment.CabinetFragment
 import com.mrstark.gopublic.fragment.CityScreensFragment
 import com.mrstark.gopublic.fragment.ScreenFragment
 import com.mrstark.gopublic.fragment.StartFragment
 import com.mrstark.gopublic.util.CameraIntentHelper
 import com.twitter.sdk.android.core.TwitterAuthToken
 import com.twitter.sdk.android.core.TwitterCore
+import ly.img.android.ui.activities.CameraPreviewActivity
 import ly.img.android.ui.utilities.PermissionRequest
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,8 +29,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), PermissionRequest.Response {
-    private var BASE_URL = "http://gopublic.by/api/"
-    private var CAMERA_PREVIEW_RESULT = 2
+    private val BASE_URL = "http://gopublic.by/api/"
+    private val RESULT = 1
 
     private var credentials: String? = null
     val KEY_SCREEN = "screen"
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
 
     var transaction: FragmentTransaction? = null
     var detailsFragment: ScreenFragment? = null
+    var screensFragment: CityScreensFragment? = null
     private val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            loadCredentials()
+ //           loadCredentials()
             loadFragment()
         }
 
@@ -71,6 +73,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
 
                     override fun onResponse(call: Call<User>?, response: Response<User>?) {
                         credentials = authHeaders[KEY_CREDENTIAL]
+                        Log.d("MyTag", authHeaders[KEY_CREDENTIAL])
                         saveCredentials()
                         loadCityScreens()
                     }
@@ -94,15 +97,12 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             when(requestCode) {
-                1 -> {
-                    var selectedImage = data.data
-                    var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-                    detailsFragment?.loadPhoto(bitmap)
+                RESULT -> {
+                    var path = data.getStringExtra(CameraPreviewActivity.RESULT_IMAGE_PATH)
+                    detailsFragment?.loadPhoto(path)
                 }
-                CAMERA_PREVIEW_RESULT -> {
-                    var extras = data.extras;
-                    var imageBitmap = extras.get("data") as Bitmap;
-                   // detailsFragment?.loadPhoto(imageBitmap)
+                2 -> {
+                    loadEditor(data.data.path)
                 }
             }
         }
@@ -132,13 +132,22 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
 
     private fun loadFragment() {
         transaction = fragmentManager.beginTransaction()
-        if (credentials?.length != 0) {
-            var fragment = CityScreensFragment()
-            transaction?.add(R.id.container, fragment)
+        if (credentials != null) {
+            screensFragment = CityScreensFragment()
+            transaction?.add(R.id.container, screensFragment)
         } else {
             transaction?.add(R.id.container, StartFragment())
         }
         transaction?.commit()
+    }
+
+    override fun onBackPressed() {
+        val count = fragmentManager.backStackEntryCount
+        if (count == 0) {
+            super.onBackPressed()
+        } else {
+            fragmentManager.popBackStack()
+        }
     }
 
     fun makeAnOrder(screen: Screen) {
@@ -147,18 +156,32 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
         transaction = fragmentManager.beginTransaction()
         detailsFragment = ScreenFragment()
         detailsFragment?.arguments = bundle
-        transaction?.add(R.id.container, detailsFragment)
+        transaction?.replace(R.id.container, detailsFragment)
+        transaction?.addToBackStack("a")
         transaction?.commit()
     }
 
     fun takeAPhoto() {
         CameraIntentHelper().getCameraIntent(this)
-                .startActivityForResult(CAMERA_PREVIEW_RESULT)
+                .startActivityForResult(RESULT)
     }
 
     fun loadImages() {
-        var intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, 1)
+        var intent = Intent(this, GalleryActivity::class.java)
+        startActivityForResult(intent, RESULT)
+    }
+
+    fun loadEditor(path: String) {
+        CameraIntentHelper().getPhotoEditorIntent(this, path)
+                .startActivityForResult(RESULT)
+    }
+
+    fun loadCabinet() {
+        transaction = fragmentManager.beginTransaction()
+        val fragment = CabinetFragment()
+        transaction?.replace(R.id.container, fragment)
+        transaction?.addToBackStack("a")
+        transaction?.commit()
     }
 
     private fun saveCredentials() {

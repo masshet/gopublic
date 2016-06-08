@@ -7,6 +7,8 @@ import com.twitter.sdk.android.core.TwitterAuthConfig
 import com.twitter.sdk.android.core.TwitterCore
 import io.fabric.sdk.android.Fabric
 import ly.img.android.ImgLySdk
+import ly.img.android.sdk.configuration.CropAspectConfig
+import ly.img.android.sdk.configuration.PhotoEditorSdkConfig
 
 /**
  * Created by mrstark on 5/25/16.
@@ -26,6 +28,10 @@ class App : Application(){
         siglton = this
         authConfig = TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET)
         Fabric.with(this, TwitterCore(authConfig), Digits())
-        ImgLySdk.init(this);
+        ImgLySdk.init(this)
+
+        var cropConfig = PhotoEditorSdkConfig.getCropConfig()
+        cropConfig.clear()
+        cropConfig.add(CropAspectConfig(R.string.imgly_crop_name_custom, R.drawable.imgly_icon_option_crop_custom, 1.4f/1))
     }
 }
