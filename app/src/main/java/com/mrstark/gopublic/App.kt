@@ -10,9 +10,7 @@ import ly.img.android.ImgLySdk
 import ly.img.android.sdk.configuration.CropAspectConfig
 import ly.img.android.sdk.configuration.PhotoEditorSdkConfig
 
-/**
- * Created by mrstark on 5/25/16.
- */
+
 class App : Application(){
 
     private val TWITTER_KEY = "FmoMoerEnmzdmEchbhVuxGa4L"
@@ -30,7 +28,7 @@ class App : Application(){
         Fabric.with(this, TwitterCore(authConfig), Digits())
         ImgLySdk.init(this)
 
-        var cropConfig = PhotoEditorSdkConfig.getCropConfig()
+        val cropConfig = PhotoEditorSdkConfig.getCropConfig()
         cropConfig.clear()
         cropConfig.add(CropAspectConfig(R.string.imgly_crop_name_custom, R.drawable.imgly_icon_option_crop_custom, 1.4f/1))
     }

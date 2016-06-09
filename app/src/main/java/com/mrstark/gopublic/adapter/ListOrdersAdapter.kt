@@ -12,9 +12,6 @@ import com.mrstark.gopublic.entity.Order
 import com.mrstark.gopublic.entity.Screen
 import com.squareup.picasso.Picasso
 
-/**
- * Created by mrstark on 6/8/16.
- */
 class ListOrdersAdapter(
         var list: List<Order>
 ) : RecyclerView.Adapter<ListOrdersAdapter.ViewHolder>() {
@@ -30,7 +27,7 @@ class ListOrdersAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        var view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_order, parent, false)
+        val view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_order, parent, false)
         context = view.context
         return ViewHolder(view)
     }

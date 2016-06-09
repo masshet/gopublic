@@ -10,15 +10,13 @@ import android.view.ViewGroup
 import com.mrstark.gopublic.R
 import com.mrstark.gopublic.adapter.PayFragmentAdapter
 
-/**
- * Created by mrstark on 5/27/16.
- */
+
 class PayFragment : DialogFragment() {
     private var recyclerView: RecyclerView? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog.setTitle(R.string.way_yo_pay)
-        var view = inflater?.inflate(R.layout.dialog_payment, null)
+        val view = inflater?.inflate(R.layout.dialog_payment, null)
         recyclerView = view?.findViewById(R.id.payment_list) as RecyclerView?
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         recyclerView?.adapter = PayFragmentAdapter()

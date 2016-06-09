@@ -4,10 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by mrstark on 6/8/16.
- */
-class Order(
+data class Order(
         @SerializedName("id")
         val id: Long,
 

@@ -18,23 +18,19 @@ import com.mrstark.gopublic.fragment.CityScreensFragment
 import com.mrstark.gopublic.fragment.ScreenFragment
 import com.mrstark.gopublic.fragment.StartFragment
 import com.mrstark.gopublic.util.CameraIntentHelper
+import com.squareup.okhttp.OkHttpClient
 import com.twitter.sdk.android.core.TwitterAuthToken
 import com.twitter.sdk.android.core.TwitterCore
 import ly.img.android.ui.activities.CameraPreviewActivity
 import ly.img.android.ui.utilities.PermissionRequest
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit.RetrofitError
 
 class MainActivity : AppCompatActivity(), PermissionRequest.Response {
-    private val BASE_URL = "http://gopublic.by/api/"
+    private val BASE_URL = "http://gopublic.by/api"
     private val RESULT = 1
 
     private var credentials: String? = null
     val KEY_SCREEN = "screen"
-    val KEY_REGISTER = "register"
     val KEY_CREDENTIAL = "X-Verify-Credentials-Authorization"
     var callback: AuthCallback? = null
 
@@ -42,12 +38,12 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
     var transaction: FragmentTransaction? = null
     var detailsFragment: ScreenFragment? = null
     var screensFragment: CityScreensFragment? = null
-    private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-    val api = retrofit.create(Api::class.java)
+    private val builder = retrofit.RestAdapter.Builder()
+            .setEndpoint(BASE_URL)
+            .setClient(retrofit.client.OkClient(OkHttpClient()))
+
+    val client = builder.build().create(Api::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppDefault)
@@ -65,20 +61,20 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
                 val authToken = session?.authToken as TwitterAuthToken
                 val digitsOAuthSigning = DigitsOAuthSigning(authConfig, authToken)
                 val authHeaders = digitsOAuthSigning.oAuthEchoHeadersForVerifyCredentials
-                var login = api.login(authHeaders[KEY_CREDENTIAL]!!)
-                login.enqueue(object : Callback<User> {
-                    override fun onFailure(call: Call<User>?, t: Throwable?) {
+                client.login(authHeaders[KEY_CREDENTIAL]!!,
+                        object : retrofit.Callback<User> {
+                            override fun failure(error: RetrofitError?) {
 
-                    }
+                            }
 
-                    override fun onResponse(call: Call<User>?, response: Response<User>?) {
-                        credentials = authHeaders[KEY_CREDENTIAL]
-                        Log.d("MyTag", authHeaders[KEY_CREDENTIAL])
-                        saveCredentials()
-                        loadCityScreens()
-                    }
+                            override fun success(t: User?, response: retrofit.client.Response?) {
+                                credentials = authHeaders[KEY_CREDENTIAL]
+                                Log.d("MyTag", authHeaders[KEY_CREDENTIAL])
+                                saveCredentials()
+                                loadCityScreens()
+                            }
 
-                })
+                        })
             }
 
             override fun failure(error: DigitsException?) {
@@ -98,7 +94,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
         if (resultCode == RESULT_OK && data != null) {
             when(requestCode) {
                 RESULT -> {
-                    var path = data.getStringExtra(CameraPreviewActivity.RESULT_IMAGE_PATH)
+                    val path = data.getStringExtra(CameraPreviewActivity.RESULT_IMAGE_PATH)
                     detailsFragment?.loadPhoto(path)
                 }
                 2 -> {
@@ -122,9 +118,9 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
 
     fun loadCityScreens() {
         transaction = fragmentManager.beginTransaction()
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString(KEY_CREDENTIAL, credentials)
-        var fragment = CityScreensFragment()
+        val fragment = CityScreensFragment()
         fragment.arguments = bundle
         transaction?.replace(R.id.container, fragment)
         transaction?.commitAllowingStateLoss()
@@ -151,7 +147,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
     }
 
     fun makeAnOrder(screen: Screen) {
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putParcelable(KEY_SCREEN, screen)
         transaction = fragmentManager.beginTransaction()
         detailsFragment = ScreenFragment()
@@ -167,7 +163,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
     }
 
     fun loadImages() {
-        var intent = Intent(this, GalleryActivity::class.java)
+        val intent = Intent(this, GalleryActivity::class.java)
         startActivityForResult(intent, RESULT)
     }
 
@@ -188,6 +184,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Response {
         val pref = getPreferences(MODE_PRIVATE)
         val editor = pref.edit()
         editor.putString(KEY_CREDENTIAL, credentials)
-        editor.commit()
+        editor.apply()
     }
 }

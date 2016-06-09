@@ -14,15 +14,11 @@ import android.view.ViewGroup
 import android.widget.*
 import com.mrstark.gopublic.MainActivity
 import com.mrstark.gopublic.R
-import com.mrstark.gopublic.api.Api2
 import com.mrstark.gopublic.entity.Screen
-import com.squareup.okhttp.OkHttpClient
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import retrofit.Callback
-import retrofit.RestAdapter
 import retrofit.RetrofitError
-import retrofit.client.OkClient
 import retrofit.client.Response
 import retrofit.mime.TypedFile
 import retrofit.mime.TypedString
@@ -70,9 +66,8 @@ class ScreenFragment(): Fragment() {
 
     fun loadPhoto(path: String) {
         this.path = path
-        Log.d("MyTag", path)
-        var file = File(path)
-        var bitmap = BitmapFactory.decodeFile(file.toString())
+        val file = File(path)
+        val bitmap = BitmapFactory.decodeFile(file.toString())
         photo?.visibility = View.VISIBLE
         photo?.setImageBitmap(bitmap)
         addPhotoButton?.visibility = View.GONE
@@ -138,7 +133,7 @@ class ScreenFragment(): Fragment() {
             Snackbar.make(root?.findViewById(R.id.view_screens)!!, R.string.choose_image, Snackbar.LENGTH_SHORT).show()
         } else {
             val credentials = activity.getPreferences(AppCompatActivity.MODE_PRIVATE).getString((activity as MainActivity).KEY_CREDENTIAL, "")
-            client.upload(
+            (activity as MainActivity).client.upload(
                     credentials,
                     TypedFile("image/*", File(path)),
                     TypedString(spinner?.firstVisiblePosition.toString()),
@@ -155,7 +150,6 @@ class ScreenFragment(): Fragment() {
                         override fun failure(error: RetrofitError?) {
                             Log.d("MyTag", error?.message)
                         }
-
                     })
         }
     }
@@ -167,7 +161,7 @@ class ScreenFragment(): Fragment() {
     }
 
     private fun showDialog() {
-        var fragment = TakePictureDialogFragment()
+        val fragment = TakePictureDialogFragment()
         fragment.show(childFragmentManager, "Pictures")
     }
 
@@ -180,10 +174,4 @@ class ScreenFragment(): Fragment() {
 
     fun getDate(): String = datePicker?.dayOfMonth.toString() + "/" + datePicker?.month.toString() + "/" + datePicker?.year.toString()
     fun getTime(): String = timePicker?.hour.toString() + ":" + timePicker?.minute.toString()
-
-    private val builder = RestAdapter.Builder()
-            .setEndpoint("http://gopublic.by/api")
-            .setClient(OkClient(OkHttpClient()))
-
-    private val client = builder.build().create(Api2::class.java)
 }

@@ -10,7 +10,7 @@ import com.mrstark.gopublic.R
 class TakePictureDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
-        var builder = AlertDialog.Builder(activity);
+        val builder = AlertDialog.Builder(activity);
         builder.setTitle(R.string.take_picture)
                 .setItems(R.array.add_actions) { dialog, which -> selectPicture(which)}
         return builder.create();

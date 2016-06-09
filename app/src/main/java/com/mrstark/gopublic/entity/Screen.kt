@@ -4,9 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by mrstark on 5/9/16.
- */
 data class Screen(
         @SerializedName("id")
         val id: Long,

@@ -8,9 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.mrstark.gopublic.R
 
-/**
- * Created by mrstark on 5/30/16.
- */
 class PayFragmentAdapter() : RecyclerView.Adapter<PayFragmentAdapter.ViewHolder>() {
     val icons = arrayListOf(R.drawable.assistlogo, R.drawable.eriplogo, R.drawable.ipaylife, R.drawable.ipaymts, R.drawable.ipayvel, R.drawable.webpaylogo)
     val titles = arrayListOf("Банковской картой", "Банковской картой", "Через SMS", "Через SMS", "Через SMS", "Банковской картой")
@@ -23,7 +20,7 @@ class PayFragmentAdapter() : RecyclerView.Adapter<PayFragmentAdapter.ViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        var view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_payment_dialog, parent, false)
+        val view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_payment_dialog, parent, false)
         return ViewHolder(view)
     }
 

@@ -25,7 +25,7 @@ class ListScreensAdapter(var list: List<Screen>) : RecyclerView.Adapter<ListScre
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        var view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_screen, parent, false)
+        val view = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_screen, parent, false)
         context = view.context
         return ViewHolder(view)
     }

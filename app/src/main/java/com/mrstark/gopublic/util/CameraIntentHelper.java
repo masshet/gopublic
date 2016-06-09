@@ -1,16 +1,10 @@
 package com.mrstark.gopublic.util;
 
 import android.app.Activity;
-import android.content.Intent;
-
-import com.mrstark.gopublic.activity.GalleryActivity;
 
 import ly.img.android.ui.activities.CameraPreviewIntent;
 import ly.img.android.ui.activities.PhotoEditorIntent;
 
-/**
- * Created by mrstark on 6/1/16.
- */
 public class CameraIntentHelper {
 
     public CameraPreviewIntent getCameraIntent(Activity activity) {

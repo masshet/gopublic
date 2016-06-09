@@ -16,27 +16,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.digits.sdk.android.DigitsAuthButton
-import com.google.gson.JsonObject
 import com.mrstark.gopublic.MainActivity
 import com.mrstark.gopublic.R
 import com.mrstark.gopublic.adapter.ListScreensAdapter
-import com.mrstark.gopublic.api.Api
+import com.mrstark.gopublic.entity.Balance
 import com.mrstark.gopublic.entity.Screen
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit.Callback
+import retrofit.RetrofitError
 
 class CityScreensFragment: Fragment(), Toolbar.OnMenuItemClickListener {
-    private var BASE_URL = "http://gopublic.by/api/"
 
     private var toolbar: Toolbar? = null
 
     private var layout: DrawerLayout? = null
     private var recyclerView: RecyclerView? = null
     private var navigationView: NavigationView? = null
-    public var screensList: List<Screen>? = null
+//    var screensList: List<Screen>? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater?.inflate(R.layout.fragment_city_screens, container, false)
         setupToolbar(root)
@@ -59,26 +54,27 @@ class CityScreensFragment: Fragment(), Toolbar.OnMenuItemClickListener {
 
     private fun setupHeader(header: View?) {
         val credentials = activity.getPreferences(AppCompatActivity.MODE_PRIVATE).getString((activity as MainActivity).KEY_CREDENTIAL, "")
-        var info = header?.findViewById(R.id.header_info) as LinearLayout
-        var auth = header?.findViewById(R.id.header_auth) as DigitsAuthButton
-        var ava = header?.findViewById(R.id.avatar) as ImageView
-        var balanceLayout = header?.findViewById(R.id.balance_layout) as RelativeLayout
-        var balance = header?.findViewById(R.id.balance) as TextView
-        var refill = header?.findViewById(R.id.refill) as Button
+        val info = header?.findViewById(R.id.header_info) as LinearLayout
+        val auth = header?.findViewById(R.id.header_auth) as DigitsAuthButton
+        val ava = header?.findViewById(R.id.avatar) as ImageView
+        val balanceLayout = header?.findViewById(R.id.balance_layout) as RelativeLayout
+        val balance = header?.findViewById(R.id.balance) as TextView
+        val refill = header?.findViewById(R.id.refill) as Button
         refill.setOnClickListener { refill() }
         if (credentials.length != 0) {
             auth.visibility = View.GONE
             ava.setImageResource(R.drawable.oi8z2kc0)
-            var call = (activity as MainActivity).api.balance(credentials)
-            call.enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
-                    balance.text = response?.body()?.get("balance").toString().replace("\"", "")
-                }
+            (activity as MainActivity).client.balance(credentials,
+                    object : Callback<Balance> {
+                        override fun failure(error: RetrofitError?) {
+                            Log.d("MyLOG", "Bad")
+                        }
 
-                override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
-                    Log.d("MyLOG", "Bad")
-                }
-            })
+                        override fun success(t: Balance?, response: retrofit.client.Response?) {
+                            balance.text = t?.balance
+                        }
+
+                    })
         } else {
             info.visibility = View.GONE
             balanceLayout.visibility = View.GONE
@@ -91,7 +87,7 @@ class CityScreensFragment: Fragment(), Toolbar.OnMenuItemClickListener {
     }
 
     private fun refill() {
-        var fragment = PayFragment()
+        val fragment = PayFragment()
         fragment.show(childFragmentManager, "Payment")
     }
 
@@ -99,18 +95,17 @@ class CityScreensFragment: Fragment(), Toolbar.OnMenuItemClickListener {
         recyclerView = root?.findViewById(R.id.list_screens) as RecyclerView?
         recyclerView?.layoutManager = LinearLayoutManager(activity)
 
-        var call = (activity as MainActivity).api.getAllScreens()
-        call.enqueue(object : Callback<List<Screen>> {
-            override fun onResponse(call: Call<List<Screen>>?, response: Response<List<Screen>>) {
-                screensList = response.body()
-                recyclerView?.adapter = ListScreensAdapter(response.body())
-            }
+        (activity as MainActivity).client.getAllScreens(
+                object : Callback<List<Screen>> {
+                    override fun success(t: List<Screen>?, response: retrofit.client.Response?) {
+                        recyclerView?.adapter = ListScreensAdapter(t!!)
+                    }
 
-            override fun onFailure(call: Call<List<Screen>>?, t: Throwable?) {
-                Log.d("MyLOG", "Bad")
-            }
+                    override fun failure(error: RetrofitError?) {
+                        Log.d("MyLOG", "Bad")
+                    }
 
-        })
+                })
     }
 
     private fun setupToolbar(root: View?) {

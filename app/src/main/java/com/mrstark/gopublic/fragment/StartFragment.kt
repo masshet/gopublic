@@ -10,9 +10,6 @@ import com.digits.sdk.android.DigitsAuthButton
 import com.mrstark.gopublic.MainActivity
 import com.mrstark.gopublic.R
 
-/**
- * Created by mrstark on 5/5/16.
- */
 class StartFragment : Fragment() {
     var button: DigitsAuthButton? = null
 

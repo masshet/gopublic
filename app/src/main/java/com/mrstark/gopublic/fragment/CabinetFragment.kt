@@ -13,9 +13,7 @@ import com.mrstark.gopublic.MainActivity
 import com.mrstark.gopublic.R
 import com.mrstark.gopublic.adapter.ListOrdersAdapter
 import com.mrstark.gopublic.entity.Order
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit.RetrofitError
 
 class CabinetFragment : Fragment() {
 
@@ -34,21 +32,20 @@ class CabinetFragment : Fragment() {
     }
 
     private fun setupRecyclerView(root: View?) {
-        var recyclerView = root?.findViewById(R.id.list_orders) as RecyclerView
+        val recyclerView = root?.findViewById(R.id.list_orders) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        val call = (activity as MainActivity).api.getOrders(
-                activity.getPreferences(AppCompatActivity.MODE_PRIVATE).getString((activity as MainActivity).KEY_CREDENTIAL, "")
-        )
-        call.enqueue(object : Callback<List<Order>> {
-            override fun onResponse(call: Call<List<Order>>?, response: Response<List<Order>>?) {
-                recyclerView.adapter = ListOrdersAdapter(response?.body()!!)
-            }
+        (activity as MainActivity).client.getOrders(
+                activity.getPreferences(AppCompatActivity.MODE_PRIVATE).getString((activity as MainActivity).KEY_CREDENTIAL, ""),
+                object : retrofit.Callback<List<Order>> {
+                    override fun failure(error: RetrofitError?) {
 
-            override fun onFailure(call: Call<List<Order>>?, t: Throwable?) {
+                    }
 
-            }
+                    override fun success(t: List<Order>?, response: retrofit.client.Response?) {
+                        recyclerView.adapter = ListOrdersAdapter(t!!)
+                    }
 
-        })
+                })
     }
 
 }
